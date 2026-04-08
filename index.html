@@ -40,7 +40,6 @@
     body.selfcode-theme .btn { background: #7a2e5a; color: #ffe0e8; border-bottom: 4px solid #3a1430; border: 1px solid #bf5f8f; }
     body.selfcode-theme .btn:hover { background: #9e3e7a; }
     body.selfcode-theme .status { background: #1a0e14; color: #e090a8; }
-    body.selfcode-theme .webhook-hint { background: #0d0508; color: #cf9eae; border: 1px dashed #8b3a5e; }
     body.selfcode-theme .choice-btn.yes { background: #8b2e5a; border-bottom-color: #3a1430; }
     body.selfcode-theme .choice-btn.no { background: #5a2e2e; border-bottom-color: #301414; }
     
@@ -59,8 +58,6 @@
     .option-item label { font-size: 1rem; cursor: pointer; width: 100%; }
     .actions { display: flex; gap: 20px; align-items: center; margin-top: 30px; }
     .btn { padding: 16px 32px; border-radius: 60px; font-weight: bold; font-size: 1.25rem; cursor: pointer; background: #2e5e2e; color: #e8ffe0; border: 1px solid #5a9e5a; }
-    .status { margin-left: auto; font-size: 1rem; padding: 10px 22px; border-radius: 40px; background: #0e200e; color: #a8e090; }
-    .webhook-hint { margin-top: 20px; font-size: 0.85rem; padding: 12px 18px; border-radius: 28px; background: #081808; color: #9ecf9e; border: 1px dashed #3e8e3e; }
     .choice-screen { text-align: center; padding: 30px 20px; }
     .choice-question { font-size: 1.8rem; font-weight: 700; margin-bottom: 40px; }
     .choice-buttons { display: flex; gap: 30px; justify-content: center; }
@@ -104,11 +101,8 @@
     <div class="quiz-area" id="quizContainer"></div>
     <div class="actions">
       <button class="btn" id="submitBtn">📨 Отправить результат</button>
-      <div class="status" id="resultPreview">—</div>
     </div>
   </div>
-
-  <div class="webhook-hint">✅ Результат будет отправлен в Discord с указанием типа опроса, IP и времени ухода со страницы.</div>
 </div>
 
 <script>
@@ -156,7 +150,6 @@
     const quizScreen = document.getElementById('quizScreen');
     const quizContainer = document.getElementById('quizContainer');
     const submitBtn = document.getElementById('submitBtn');
-    const resultPreview = document.getElementById('resultPreview');
     const progressFill = document.getElementById('progressFill');
     const quizTypeLabel = document.getElementById('quizTypeLabel');
     const questionCountBadge = document.getElementById('questionCountBadge');
@@ -255,7 +248,6 @@
       
       renderQuiz();
       updateProgress();
-      updatePreview();
     }
 
     function resetToChoice() {
@@ -300,7 +292,7 @@
         radio.addEventListener('change', function() {
           const qIdx = parseInt(this.name.substring(1));
           const optIdx = parseInt(this.value);
-          if (!isNaN(qIdx)) { userAnswers[qIdx] = optIdx; updateProgress(); updatePreview(); }
+          if (!isNaN(qIdx)) { userAnswers[qIdx] = optIdx; updateProgress(); }
         });
       });
     }
@@ -318,12 +310,6 @@
         });
       });
       return { correctCount: correct, total: currentQuestions.length, percent: Math.round((correct / currentQuestions.length) * 100), details };
-    }
-
-    function updatePreview() {
-      const answered = userAnswers.filter(a => a !== null).length;
-      if (answered === currentQuestions.length) resultPreview.textContent = `✅ Готово · ${calculateScore().percent}%`;
-      else resultPreview.textContent = `📋 ${answered}/${currentQuestions.length}`;
     }
 
     async function sendToWebhook(nick, scoreData, typeLabel) {
@@ -371,11 +357,9 @@
       const res = await sendToWebhook(nick, score, typeLabel);
       
       if (res.success) {
-        resultPreview.textContent = `✅ Отправлено! ${score.percent}%`;
         alert(`✅ Результат отправлен!\n${nick}: ${score.percent}% (${score.correctCount}/${score.total})`);
         resetToChoice();
       } else {
-        resultPreview.textContent = `❌ Ошибка`;
         alert(`❌ Ошибка отправки: ${res.error}`);
       }
       submitBtn.disabled = false;
