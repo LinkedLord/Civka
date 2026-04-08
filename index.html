@@ -1,456 +1,347 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест для разработчика сервера CivWorld Minecraft</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .nickname-section, .question-card, .results, .progress {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .nickname-input {
-            width: 100%;
-            padding: 12px;
-            font-size: 1.1em;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .start-btn, .submit-btn, .restart-btn, .back-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .start-btn:hover, .submit-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .test-area {
-            display: none;
-        }
-        
-        .question-text {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .option {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .option:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-        
-        .option input {
-            margin-right: 10px;
-            cursor: pointer;
-        }
-        
-        .option label {
-            cursor: pointer;
-            flex: 1;
-        }
-        
-        .score {
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-        }
-        
-        .result-item {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border-left: 4px solid;
-        }
-        
-        .result-correct {
-            background: #d4edda;
-            border-left-color: #28a745;
-        }
-        
-        .result-wrong {
-            background: #f8d7da;
-            border-left-color: #dc3545;
-        }
-        
-        .restart-btn, .back-btn {
-            margin-top: 15px;
-            width: 100%;
-        }
-        
-        .warning {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .webhook-status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #333;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 1.5em; }
-            .question-card { padding: 15px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivWorld · Тест на Разработчика</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; transition: background 0.3s ease, border-color 0.3s ease; }
+    
+    /* ТЕМА ПО УМОЛЧАНИЮ (ЗЕЛЁНАЯ) */
+    body { background: linear-gradient(145deg, #0d1f0d 0%, #051005 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+    .card { max-width: 800px; width: 100%; background: rgba(10, 20, 10, 0.95); border: 1px solid #2e6b2e; border-radius: 36px; padding: 32px 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.9); color: #d4f0c8; }
+    h1 { color: #a8e696; border-bottom: 2px dashed #3e7a3e; }
+    h1 span { background: #1e401e; color: #c8f0b0; }
+    .badge { background: #2e5a2e; color: #c8f0b0; }
+    .nick-section { background: #0e1e0e; border-left: 6px solid #5fa05f; }
+    .nick-label { color: #b8e0a0; }
+    .nick-input { background: #081008; border: 2px solid #2e6b2e; color: #e8ffe0; }
+    .progress-bar { background: #0e1e0e; border: 1px solid #3a6b3a; }
+    .progress-fill { background: linear-gradient(90deg, #4a9e4a, #7fcf7f); }
+    .quiz-type { background: #1e401e; color: #c8f0b0; }
+    .back-btn { border: 1px solid #5a9e5a; color: #a8e090; }
+    .question-block { background: #0f1e0f; border: 1px solid #2a5a2a; }
+    .q-title { color: #c8f0b0; }
+    .q-num { background: #1e401e; }
+    .option-item { background: #0f1a0f; border: 1px solid #2a5a2a; }
+    .btn { background: #2e5e2e; color: #e8ffe0; border-bottom: 4px solid #143014; border: 1px solid #5a9e5a; }
+    .status { background: #0e200e; color: #a8e090; }
+    .webhook-hint { background: #081808; color: #9ecf9e; border: 1px dashed #3e8e3e; }
+    .choice-btn.yes { background: #2e7a2e; border-bottom-color: #143014; }
+    .choice-btn.no { background: #7a2e2e; border-bottom-color: #301414; }
+    
+    /* ТЕМА ДЛЯ САМОПИСОВ (ТЁМНО-КРАСНАЯ/ФИОЛЕТОВАЯ) */
+    body.selfcode-theme { background: linear-gradient(145deg, #1a0a12 0%, #0d0508 100%); }
+    body.selfcode-theme .card { background: rgba(25, 8, 15, 0.95); border: 1px solid #8b3a5e; box-shadow: 0 20px 40px rgba(0,0,0,0.9), 0 0 20px rgba(180, 50, 100, 0.2); color: #f0c8d8; }
+    body.selfcode-theme h1 { color: #e696b0; border-bottom: 2px dashed #8b3a5e; text-shadow: 0 2px 5px #3a0e1e; }
+    body.selfcode-theme h1 span { background: #5e1e3a; color: #f0b0c8; }
+    body.selfcode-theme .badge { background: #7a2e5a; color: #f0b0c8; }
+    body.selfcode-theme .nick-section { background: #1a0e14; border-left: 6px solid #bf5f8f; }
+    body.selfcode-theme .nick-label { color: #e0a0b8; }
+    body.selfcode-theme .nick-input { background: #0d0508; border: 2px solid #8b3a5e; color: #ffe0e8; }
+    body.selfcode-theme .progress-bar { background: #1a0e14; border: 1px solid #8b3a5e; }
+    body.selfcode-theme .progress-fill { background: linear-gradient(90deg, #9e4a6e, #cf7f9f); }
+    body.selfcode-theme .quiz-type { background: #5e1e3a; color: #f0b0c8; }
+    body.selfcode-theme .back-btn { border: 1px solid #bf5f8f; color: #e090a8; }
+    body.selfcode-theme .back-btn:hover { background: #3a1e2e; }
+    body.selfcode-theme .question-block { background: #1a0e14; border: 1px solid #8b3a5e; }
+    body.selfcode-theme .q-title { color: #f0b0c8; }
+    body.selfcode-theme .q-num { background: #5e1e3a; }
+    body.selfcode-theme .option-item { background: #140a10; border: 1px solid #8b3a5e; }
+    body.selfcode-theme .option-item:hover { background: #2e1a24; }
+    body.selfcode-theme .btn { background: #7a2e5a; color: #ffe0e8; border-bottom: 4px solid #3a1430; border: 1px solid #bf5f8f; box-shadow: 0 6px 0 #2e1222; }
+    body.selfcode-theme .btn:hover { background: #9e3e7a; box-shadow: 0 8px 0 #2e1222; }
+    body.selfcode-theme .status { background: #1a0e14; color: #e090a8; }
+    body.selfcode-theme .webhook-hint { background: #0d0508; color: #cf9eae; border: 1px dashed #8b3a5e; }
+    body.selfcode-theme .choice-btn.yes { background: #8b2e5a; border-bottom-color: #3a1430; }
+    body.selfcode-theme .choice-btn.yes:hover { background: #b03e7a; box-shadow: 0 8px 0 #3a1430; }
+    body.selfcode-theme .choice-btn.no { background: #5a2e2e; border-bottom-color: #301414; }
+    
+    /* Общие стили */
+    h1 { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 2rem; padding-bottom: 18px; margin-bottom: 20px; }
+    h1 span { padding: 4px 16px; border-radius: 100px; font-size: 1rem; }
+    .badge { padding: 6px 16px; border-radius: 30px; font-weight: bold; font-size: 0.9rem; margin-left: 10px; }
+    .nick-section { border-radius: 28px; padding: 20px 24px; margin: 24px 0 20px; }
+    .nick-label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 1.2rem; }
+    .nick-input { width: 100%; padding: 16px 20px; border-radius: 48px; font-size: 1.3rem; outline: none; }
+    .choice-screen { text-align: center; padding: 30px 20px; }
+    .choice-question { font-size: 1.8rem; font-weight: 700; margin-bottom: 40px; }
+    .choice-buttons { display: flex; gap: 30px; justify-content: center; }
+    .choice-btn { padding: 20px 50px; font-size: 1.8rem; font-weight: bold; border: none; border-radius: 60px; cursor: pointer; transition: all 0.2s; }
+    .choice-btn:hover { transform: translateY(-3px); }
+    .progress-bar { border-radius: 30px; padding: 3px; margin: 20px 0 10px; }
+    .progress-fill { height: 12px; border-radius: 30px; width: 0%; transition: width 0.2s; }
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .quiz-type { padding: 6px 20px; border-radius: 30px; }
+    .back-btn { background: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-size: 0.9rem; }
+    .quiz-area { margin: 28px 0 20px; }
+    .question-block { border-radius: 24px; padding: 18px 20px; margin-bottom: 20px; }
+    .q-title { font-weight: 700; font-size: 1.15rem; margin-bottom: 14px; display: flex; gap: 10px; }
+    .q-num { border-radius: 30px; min-width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option-item { display: flex; align-items: center; padding: 10px 16px; border-radius: 40px; cursor: pointer; }
+    .option-item input { margin-right: 16px; accent-color: #bf5f8f; width: 18px; height: 18px; cursor: pointer; }
+    .option-item label { font-size: 1rem; cursor: pointer; width: 100%; }
+    .actions { display: flex; gap: 20px; align-items: center; margin-top: 30px; }
+    .btn { padding: 16px 32px; border-radius: 60px; font-weight: bold; font-size: 1.25rem; cursor: pointer; }
+    .btn:disabled { opacity: 0.5; pointer-events: none; }
+    .status { margin-left: auto; font-size: 1rem; padding: 10px 22px; border-radius: 40px; }
+    .webhook-hint { margin-top: 20px; font-size: 0.85rem; padding: 12px 18px; border-radius: 28px; }
+    .error-msg { color: #ffa098; margin-top: 8px; font-weight: 500; }
+    .hidden { display: none !important; }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>🎮 Тест для разработчика сервера CivWorld Minecraft 🎮</h1>
-        
-        <div id="nickname-section" class="nickname-section">
-            <h2>👋 Введите ваш никнейм</h2>
-            <input type="text" id="nickname" class="nickname-input" placeholder="Ваш игровой никнейм" maxlength="32">
-            <div class="warning" id="nickname-warning">Пожалуйста, введите никнейм!</div>
-            <button class="start-btn" onclick="startTest()">🚀 Начать тест</button>
-        </div>
-        
-        <div id="test-area" class="test-area">
-            <div class="progress" id="progress">📊 Прогресс: 0 из 30</div>
-            <div id="questions-container"></div>
-            <button class="submit-btn" onclick="submitTest()">📝 Завершить тест</button>
-        </div>
-        
-        <div id="results" class="results" style="display: none;"></div>
+<body id="mainBody">
+<div class="card">
+  <h1>🌿 CivWorld <span>Тест на Разработчика</span><span class="badge" id="questionCountBadge">7 вопросов</span></h1>
+
+  <!-- Блок ввода ника (всегда виден) -->
+  <div class="nick-section">
+    <label class="nick-label" for="nickname">📛 Ваш ник в Minecraft</label>
+    <input type="text" id="nickname" class="nick-input" placeholder="Например: _xNotch_" maxlength="24" autocomplete="off">
+    <div id="nickError" class="error-msg"></div>
+  </div>
+
+  <!-- ЭКРАН ВЫБОРА -->
+  <div id="choiceScreen" class="choice-screen">
+    <div class="choice-question">❓ Вы умеете писать самописы?</div>
+    <div class="choice-buttons">
+      <button class="choice-btn yes" id="choiceYes">✅ ДА</button>
+      <button class="choice-btn no" id="choiceNo">❌ НЕТ</button>
     </div>
+    <p style="margin-top: 30px; opacity: 0.7;">Выберите вариант, чтобы начать тест</p>
+  </div>
 
-    <div class="webhook-status" id="webhook-status" onclick="configureWebhook()">
-        ⚙️ Настроить Webhook
+  <!-- ЭКРАН ОПРОСА -->
+  <div id="quizScreen" class="hidden">
+    <div class="quiz-header">
+      <span class="quiz-type" id="quizTypeLabel">Обычный опрос</span>
+      <button class="back-btn" id="backBtn">← Назад к выбору</button>
     </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="quiz-area" id="quizContainer"></div>
+    <div class="actions">
+      <button class="btn" id="submitBtn">📨 Отправить результат</button>
+      <div class="status" id="resultPreview">—</div>
+    </div>
+  </div>
 
-    <script>
-        // ⚠️ ВСТАВЬТЕ СВОЙ DISCORD WEBHOOK URL СЮДА ⚠️
-        let DISCORD_WEBHOOK_URL = localStorage.getItem('discord_webhook') || '';
-        
-        // ВСЕ 30 ВОПРОСОВ
-        const questions = [
-            { id: 1, text: "Как выдать операторские права игроку на сервере?", options: ["/op Игрок", "/giveop Игрок", "/admin Игрок", "/rank Игрок op"], correct: 0 },
-            { id: 2, text: "Как настроить EssentialsX, чтобы убрать команду /spawn?", options: ["Удалить плагин", "В config.yml установить spawn-enabled: false", "В командах удалить spawn", "Заблокировать в permissions.yml"], correct: 1 },
-            { id: 3, text: "Какой плагин лучше всего подходит для защиты территорий в CivWorld?", options: ["WorldGuard", "GriefPrevention", "Towny", "Factions"], correct: 2 },
-            { id: 4, text: "Как создать экономическую валюту на сервере через EssentialsX?", options: ["В config.yml изменить currency-symbol", "/eco create", "Установить Vault и настроить", "Изменить в bukkit.yml"], correct: 2 },
-            { id: 5, text: "Как запретить использование команды /tp всем, кроме администраторов?", options: ["Удалить плагин", "В permissions.yml настроить essentials.tp для группы admin", "Использовать /deop", "Установить WorldGuard"], correct: 1 },
-            { id: 6, text: "Как создать кастомный рецепт крафта на сервере?", options: ["Через CraftBukkit", "Плагин CustomRecipes", "Изменить server.properties", "Через EssentialsX"], correct: 1 },
-            { id: 7, text: "Как настроить ежедневные награды для игроков?", options: ["Плагин DailyRewards", "EssentialsX имеет встроенную функцию", "Через скрипты CommandHelper", "Все варианты верны"], correct: 3 },
-            { id: 8, text: "Как изменить максимальное количество игроков на сервере?", options: ["В server.properties max-players", "В bukkit.yml", "В spigot.yml", "Через консоль /setmax"], correct: 0 },
-            { id: 9, text: "Как создать систему рангов в CivWorld?", options: ["Через LuckPerms", "Через GroupManager", "Через PermissionsEx", "Все варианты верны"], correct: 3 },
-            { id: 10, text: "Как настроить автоматическую перезагрузку сервера?", options: ["Плагин AutoRestart", "Скрипт cron на хостинге", "Через server.properties", "Только вручную"], correct: 1 },
-            { id: 11, text: "Как откатить изменения в мире после гриферства?", options: ["CoreProtect", "WorldEdit", "WorldGuard", "GriefPrevention"], correct: 0 },
-            { id: 12, text: "Как создать войну между городами в CivWorld?", options: ["Towny имеет встроенную систему войн", "Через Factions", "Через плагин War", "Только модерация"], correct: 0 },
-            { id: 13, text: "Как настроить телепортацию на спавн при смерти?", options: ["В EssentialsX config: spawn-on-join: true", "Через WorldGuard", "Через Multiverse-Core", "В server.properties"], correct: 0 },
-            { id: 14, text: "Как создать кастомные достижения на сервере?", options: ["Плагин CustomAchievements", "Через Bukkit API", "Через скрипты Skript", "Все варианты"], correct: 3 },
-            { id: 15, text: "Как ограничить использование определенных предметов в мире?", options: ["WorldGuard флаги", "ItemRestrict", "ClearLag", "EssentialsX"], correct: 0 },
-            { id: 16, text: "Как настроить динамическую карту мира для игроков?", options: ["Плагин Dynmap", "Через Overviewer", "Через Minecraft Server", "Нельзя"], correct: 0 },
-            { id: 17, text: "Как создать магазин, где игроки могут продавать предметы?", options: ["Плагин ShopGUI+", "EssentialsX имеет /sell", "ChestShop", "Все варианты"], correct: 3 },
-            { id: 18, text: "Как заблокировать игрока по IP-адресу?", options: ["/ban-ip Игрок", "/ipban Игрок", "В banned-ips.json", "Все варианты"], correct: 3 },
-            { id: 19, text: "Как создать систему голосования за сервер?", options: ["Плагин VoteParty", "Через NuVotifier", "Через Bukkit", "Все варианты"], correct: 3 },
-            { id: 20, text: "Как настроить различные миры с разными правилами?", options: ["Multiverse-Core", "WorldGuard", "EssentialsX", "LuckPerms"], correct: 0 },
-            { id: 21, text: "Как создать PvP-арену с автоматическим началом игры?", options: ["Плагин BattleArena", "Через WorldGuard", "Через скрипты", "Все варианты"], correct: 0 },
-            { id: 22, text: "Как настроить экономику, чтобы игроки получали деньги за убийство мобов?", options: ["Плагин MobMoney", "Через EssentialsX", "Через Vault", "Все варианты"], correct: 0 },
-            { id: 23, text: "Как создать систему кланов с общим хранилищем?", options: ["Плагин SimpleClans", "Через Factions", "Через Towny", "Все варианты"], correct: 3 },
-            { id: 24, text: "Как настроить чат с префиксами рангов?", options: ["Плагин ChatManager", "Через LuckPerms", "Через EssentialsX Chat", "Все варианты"], correct: 3 },
-            { id: 25, text: "Как запретить использование определенных команд в конкретном мире?", options: ["Multiverse-Core имеет флаги команд", "Через WorldGuard", "Через CommandBlocker", "Все варианты"], correct: 0 },
-            { id: 26, text: "Как создать систему событий на сервере?", options: ["Плагин EventsSystem", "Через скрипты Skript", "Через CommandHelper", "Все варианты"], correct: 3 },
-            { id: 27, text: "Как настроить резервное копирование мира?", options: ["Плагин Backup", "Скрипт на хостинге", "Ручное копирование", "Все варианты"], correct: 3 },
-            { id: 28, text: "Как создать систему приватов для игроков?", options: ["GriefPrevention", "WorldGuard", "Residence", "Все варианты"], correct: 3 },
-            { id: 29, text: "Как настроить таблицу лидеров на сайте сервера?", options: ["Плагин LeaderHeads", "Через MySQL и веб-интерфейс", "Через Discord бота", "Все варианты"], correct: 3 },
-            { id: 30, text: "Как полностью защитить спавн от разрушений и PvP?", options: ["WorldGuard с флагами build и pvp", "Через GriefPrevention", "Через Towny", "Через Factions"], correct: 0 }
-        ];
+  <div class="webhook-hint">✅ Результат будет отправлен в Discord с указанием типа опроса.</div>
+</div>
 
-        let userAnswers = new Array(30).fill(-1);
-        let currentNickname = '';
+<script>
+  (function() {
+    "use strict";
+    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1491366949010018455/flv5DTdLiHjFCiX0xBywFxNtLF-TL5oComFgvzlDxnaXlKa8mx8DahgbIfNNEFf4-QiH';
 
-        // Функция отправки в Discord (прямо из браузера)
-        async function sendToDiscord(nickname, score, total, wrongAnswers, wrongQuestionsList) {
-            if (!DISCORD_WEBHOOK_URL) {
-                console.log('Webhook не настроен');
-                return;
-            }
+    // ========== ВОПРОСЫ ДЛЯ САМОПИСОВ ==========
+    const SELFCODE_QUESTIONS = [
+      { text: 'Какой метод используется для регистрации кастомной команды в Bukkit?', options: ['getCommandMap().register()', 'Bukkit.registerCommand()', 'PluginManager.registerCommand()', 'CommandRegistry.add()'], correct: 0 },
+      { text: 'Как правильно создать кастомный конфиг в плагине?', options: ['saveDefaultConfig() + getConfig()', 'new YamlConfiguration().load()', 'FileConfiguration.load()', 'Plugin.getConfig()'], correct: 0 },
+      { text: 'Какой класс нужно расширить для создания кастомного ивента?', options: ['Event', 'CustomEvent', 'BukkitEvent', 'PluginEvent'], correct: 0 },
+      { text: 'Как зарегистрировать кастомный рецепт крафта?', options: ['Bukkit.addRecipe()', 'Server.addRecipe()', 'RecipeManager.register()', 'CraftingManager.addRecipe()'], correct: 1 },
+      { text: 'Какой интерфейс используется для кастомного таймера?', options: ['Runnable', 'BukkitRunnable', 'TimerTask', 'ScheduledTask'], correct: 1 },
+      { text: 'Как сохранить данные игрока в файл?', options: ['FileConfiguration.save()', 'YamlConfiguration.save()', 'Config.save()', 'Все варианты верны'], correct: 1 },
+      { text: 'Что такое Dependency в plugin.yml?', options: ['Зависимость от других плагинов', 'Библиотеки Maven', 'Внешние JAR файлы', 'Системные требования'], correct: 0 }
+    ];
 
-            const percentage = (score / total * 100).toFixed(1);
-            let emoji = '';
-            if (percentage >= 90) emoji = '🏆';
-            else if (percentage >= 70) emoji = '🎯';
-            else if (percentage >= 50) emoji = '📚';
-            else emoji = '📖';
+    // ========== ОБЫЧНЫЕ ВОПРОСЫ ==========
+    const REGULAR_QUESTIONS = [
+      { text: 'Что такое LPX?', options: ['Плагин для экономики', 'Анти-Краш система', 'Лаунчер Minecraft', 'Сокращение от LuckPerms eXchange'], correct: 1 },
+      { text: 'Как назначить право в LuckPerms?', options: ['/lp user <ник> permission set <узел> true', '/perm add <ник> <право>', 'В файле ops.json', 'Через веб-редактор'], correct: 0 },
+      { text: 'Какой контекст НЕ является встроенным в LuckPerms?', options: ['server', 'world', 'gamemode', 'dimension'], correct: 2 },
+      { text: 'Что делает команда "/lp verbose"?', options: ['Показывает логи', 'Включает отслеживание проверок прав', 'Очищает кэш', 'Выводит справку'], correct: 1 },
+      { text: 'Какой метод PaperAPI для асинхронного чанка?', options: ['getChunkAtAsync()', 'loadChunkAsync()', 'getChunkAsync()', 'requestChunk()'], correct: 0 },
+      { text: 'Что такое Aikar\'s Flags?', options: ['Флаги для WorldGuard', 'Оптимизированные JVM флаги', 'Настройки Paper', 'Параметры BungeeCord'], correct: 1 },
+      { text: 'Как в LuckPerms применить право в одном мире?', options: ['/lp user <ник> permission set <узел> true world=<мир>', '/lp context', 'В конфиге групп', 'Через мета-теги'], correct: 0 }
+    ];
 
-            const embed = {
-                title: `${emoji} Результаты теста Minecraft CivWorld ${emoji}`,
-                color: percentage >= 70 ? 0x00ff00 : (percentage >= 50 ? 0xffa500 : 0xff0000),
-                fields: [
-                    {
-                        name: '👤 Игрок',
-                        value: `\`${nickname}\``,
-                        inline: true
-                    },
-                    {
-                        name: '📊 Результат',
-                        value: `✅ Правильно: ${score}\n❌ Неправильно: ${wrongAnswers}\n📈 Процент: ${percentage}%`,
-                        inline: true
-                    },
-                    {
-                        name: '📝 Список ошибок',
-                        value: wrongQuestionsList.length > 0 ? wrongQuestionsList.slice(0, 15).join('\n') : '🎉 Нет ошибок! Отличный результат!',
-                        inline: false
-                    }
-                ],
-                timestamp: new Date().toISOString(),
-                footer: {
-                    text: 'Тест для разработчиков CivWorld'
-                }
-            };
+    // ========== СОСТОЯНИЕ ==========
+    let currentQuestions = [];
+    let quizType = '';
+    let userAnswers = [];
+    
+    const mainBody = document.getElementById('mainBody');
+    const nicknameInput = document.getElementById('nickname');
+    const nickError = document.getElementById('nickError');
+    const choiceScreen = document.getElementById('choiceScreen');
+    const quizScreen = document.getElementById('quizScreen');
+    const quizContainer = document.getElementById('quizContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultPreview = document.getElementById('resultPreview');
+    const progressFill = document.getElementById('progressFill');
+    const quizTypeLabel = document.getElementById('quizTypeLabel');
+    const questionCountBadge = document.getElementById('questionCountBadge');
+    const backBtn = document.getElementById('backBtn');
 
-            try {
-                const response = await fetch(DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [embed] })
-                });
-                
-                if (response.ok) {
-                    console.log('Результаты отправлены в Discord');
-                    return true;
-                } else {
-                    console.error('Ошибка отправки');
-                    return false;
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                return false;
-            }
-        }
+    // ========== ФУНКЦИИ ==========
+    function validateNick() {
+      const nick = nicknameInput.value.trim();
+      if (!nick) { nickError.textContent = '⛔ Никнейм обязателен'; return false; }
+      if (nick.length < 3 || nick.length > 24) { nickError.textContent = '⛔ Ник от 3 до 24 символов'; return false; }
+      if (!/^[a-zA-Z0-9_]+$/.test(nick)) { nickError.textContent = '⛔ Только латиница, цифры и _'; return false; }
+      nickError.textContent = ''; return true;
+    }
 
-        function startTest() {
-            const nickname = document.getElementById('nickname').value.trim();
-            const warning = document.getElementById('nickname-warning');
-            
-            if (nickname === '') {
-                warning.style.display = 'block';
-                return;
-            }
-            
-            warning.style.display = 'none';
-            currentNickname = nickname;
-            
-            document.getElementById('nickname-section').style.display = 'none';
-            document.getElementById('test-area').style.display = 'block';
-            displayQuestions();
-        }
+    function applyTheme(type) {
+      if (type === 'selfcode') {
+        mainBody.classList.add('selfcode-theme');
+      } else {
+        mainBody.classList.remove('selfcode-theme');
+      }
+    }
 
-        function displayQuestions() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-            
-            questions.forEach((q, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question-card';
-                questionDiv.innerHTML = `
-                    <div class="question-text">${index + 1}. ${q.text}</div>
-                    <div class="options" id="options-${index}">
-                        ${q.options.map((opt, optIndex) => `
-                            <div class="option" onclick="selectOption(${index}, ${optIndex})">
-                                <input type="radio" name="q${index}" value="${optIndex}" ${userAnswers[index] === optIndex ? 'checked' : ''}>
-                                <label>${opt}</label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(questionDiv);
-            });
-            
-            updateProgress();
-        }
+    function startQuiz(type) {
+      if (!validateNick()) { nicknameInput.focus(); return; }
+      
+      quizType = type;
+      currentQuestions = type === 'selfcode' ? SELFCODE_QUESTIONS : REGULAR_QUESTIONS;
+      userAnswers = new Array(currentQuestions.length).fill(null);
+      
+      // Применяем тему
+      applyTheme(type);
+      
+      quizTypeLabel.textContent = type === 'selfcode' ? '🔥 Опрос по самописам' : '📚 Обычный опрос';
+      questionCountBadge.textContent = currentQuestions.length + ' вопросов';
+      
+      choiceScreen.classList.add('hidden');
+      quizScreen.classList.remove('hidden');
+      
+      renderQuiz();
+      updateProgress();
+      updatePreview();
+    }
 
-        function selectOption(questionIndex, optionIndex) {
-            userAnswers[questionIndex] = optionIndex;
-            const radio = document.querySelector(`input[name="q${questionIndex}"][value="${optionIndex}"]`);
-            if (radio) radio.checked = true;
-            updateProgress();
-        }
+    function resetToChoice() {
+      quizScreen.classList.add('hidden');
+      choiceScreen.classList.remove('hidden');
+      // Сбрасываем тему на обычную (зелёную)
+      mainBody.classList.remove('selfcode-theme');
+      quizType = '';
+      currentQuestions = [];
+      userAnswers = [];
+    }
 
-        function updateProgress() {
-            const answered = userAnswers.filter(a => a !== -1).length;
-            document.getElementById('progress').textContent = `📊 Прогресс: ${answered} из 30 вопросов отвечено`;
-        }
+    function updateProgress() {
+      const answered = userAnswers.filter(a => a !== null).length;
+      progressFill.style.width = (answered / currentQuestions.length) * 100 + '%';
+    }
 
-        async function submitTest() {
-            const unanswered = userAnswers.some(a => a === -1);
-            if (unanswered) {
-                if (!confirm(`Вы ответили не на все вопросы! (${userAnswers.filter(a => a === -1).length} пропущено)\nХотите завершить тест?`)) {
-                    return;
-                }
-            }
-            
-            // Показываем загрузку
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = '⏳ Отправка результатов...';
-            submitBtn.disabled = true;
-            
-            // Считаем результаты
-            let score = 0;
-            const results = [];
-            const wrongQuestionsList = [];
-            
-            questions.forEach((q, index) => {
-                const isCorrect = userAnswers[index] === q.correct;
-                if (isCorrect) {
-                    score++;
-                } else {
-                    wrongQuestionsList.push(`❌ Вопрос ${q.id}: ${q.text}\n   Ваш ответ: ${userAnswers[index] !== undefined && userAnswers[index] !== -1 ? q.options[userAnswers[index]] : 'Не отвечен'}\n   Правильный: ${q.options[q.correct]}`);
-                }
-                
-                results.push({
-                    id: q.id,
-                    text: q.text,
-                    userAnswer: userAnswers[index] !== undefined && userAnswers[index] !== -1 ? q.options[userAnswers[index]] : 'Не отвечен',
-                    correctAnswer: q.options[q.correct],
-                    isCorrect: isCorrect
-                });
-            });
-            
-            const wrongAnswers = questions.length - score;
-            
-            // Отправляем в Discord
-            let webhookSent = false;
-            if (DISCORD_WEBHOOK_URL) {
-                webhookSent = await sendToDiscord(currentNickname, score, questions.length, wrongAnswers, wrongQuestionsList);
-            }
-            
-            // Показываем результаты
-            displayResults(results, score, wrongAnswers, webhookSent);
-            
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }
+    function renderQuiz() {
+      let html = '';
+      currentQuestions.forEach((q, idx) => {
+        const selected = userAnswers[idx];
+        html += `<div class="question-block"><div class="q-title"><span class="q-num">${idx+1}</span> ${q.text}</div><div class="options">`;
+        q.options.forEach((opt, optIdx) => {
+          html += `<div class="option-item" data-q="${idx}" data-opt="${optIdx}">
+            <input type="radio" name="q${idx}" value="${optIdx}" id="q${idx}o${optIdx}" ${selected === optIdx ? 'checked' : ''}>
+            <label for="q${idx}o${optIdx}">${opt}</label>
+          </div>`;
+        });
+        html += `</div></div>`;
+      });
+      quizContainer.innerHTML = html;
 
-        function displayResults(results, score, wrongAnswers, webhookSent) {
-            const percentage = (score / questions.length * 100).toFixed(1);
-            let grade = '';
-            if (percentage >= 90) grade = '🏆 Отлично! Вы настоящий эксперт!';
-            else if (percentage >= 70) grade = '🎯 Хорошо! Вы знаете много!';
-            else if (percentage >= 50) grade = '📚 Неплохо, но нужно подучить!';
-            else grade = '📖 Вам стоит изучить администрирование серверов!';
-            
-            const webhookMessage = webhookSent ? '✅ Результаты отправлены в Discord!' : (DISCORD_WEBHOOK_URL ? '❌ Ошибка отправки в Discord' : '⚠️ Webhook не настроен');
-            
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `
-                <div class="score">
-                    🎯 Результат игрока: ${currentNickname}<br>
-                    ✅ Правильно: ${score} / ${questions.length}<br>
-                    ❌ Неправильно: ${wrongAnswers}<br>
-                    📈 ${percentage}%<br>
-                    ${grade}<br>
-                    <small style="font-size: 0.5em;">${webhookMessage}</small>
-                </div>
-                <button class="restart-btn" onclick="restartTest()">🔄 Пройти тест заново</button>
-                <div style="margin-top: 20px;">
-                    ${results.map(r => `
-                        <div class="result-item ${r.isCorrect ? 'result-correct' : 'result-wrong'}">
-                            <strong>Вопрос ${r.id}: ${r.text}</strong><br>
-                            ${r.isCorrect ? '✅' : '❌'} Ваш ответ: ${r.userAnswer}<br>
-                            ${!r.isCorrect ? `✅ Правильный ответ: ${r.correctAnswer}` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="back-btn" onclick="location.reload()">🏠 На главную</button>
-            `;
-            
-            resultsDiv.style.display = 'block';
-            document.getElementById('test-area').style.display = 'none';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+      document.querySelectorAll('.option-item').forEach(el => {
+        el.addEventListener('click', function() {
+          const radio = this.querySelector('input[type="radio"]');
+          if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+        });
+      });
 
-        function restartTest() {
-            userAnswers = new Array(30).fill(-1);
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('test-area').style.display = 'block';
-            displayQuestions();
-        }
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          const qIdx = parseInt(this.name.substring(1));
+          const optIdx = parseInt(this.value);
+          if (!isNaN(qIdx)) { userAnswers[qIdx] = optIdx; updateProgress(); updatePreview(); }
+        });
+      });
+    }
 
-        function configureWebhook() {
-            const newWebhook = prompt('Введите Discord Webhook URL:', DISCORD_WEBHOOK_URL);
-            if (newWebhook !== null) {
-                DISCORD_WEBHOOK_URL = newWebhook;
-                localStorage.setItem('discord_webhook', newWebhook);
-                document.getElementById('webhook-status').style.backgroundColor = newWebhook ? '#28a745' : '#333';
-                alert('Webhook сохранён!');
-            }
-        }
+    function calculateScore() {
+      let correct = 0, details = [];
+      currentQuestions.forEach((q, i) => {
+        const isCorrect = userAnswers[i] === q.correct;
+        if (isCorrect) correct++;
+        details.push({
+          question: q.text,
+          userAnswer: userAnswers[i] !== null ? q.options[userAnswers[i]] : '❌ не выбрано',
+          correctAnswer: q.options[q.correct],
+          isCorrect
+        });
+      });
+      return { correctCount: correct, total: currentQuestions.length, percent: Math.round((correct / currentQuestions.length) * 100), details };
+    }
 
-        // Обновляем статус вебхука при загрузке
-        if (DISCORD_WEBHOOK_URL) {
-            document.getElementById('webhook-status').style.backgroundColor = '#28a745';
-        }
-    </script>
+    function updatePreview() {
+      const answered = userAnswers.filter(a => a !== null).length;
+      if (answered === currentQuestions.length) {
+        resultPreview.textContent = `✅ Готово · ${calculateScore().percent}%`;
+      } else {
+        resultPreview.textContent = `📋 ${answered}/${currentQuestions.length}`;
+      }
+    }
+
+    async function sendToWebhook(nick, scoreData, typeLabel) {
+      const { percent, details, correctCount, total } = scoreData;
+      let answersBlock = '';
+      details.forEach((d, i) => {
+        answersBlock += `**${i+1}. ${d.question}**\n   ${d.isCorrect ? '✅' : '❌'} Ответ: \`${d.userAnswer}\`\n`;
+        if (!d.isCorrect) answersBlock += `   ↳ Правильно: \`${d.correctAnswer}\`\n`;
+        answersBlock += `\n`;
+      });
+
+      const embed = {
+        title: `📊 CivWorld · ${typeLabel}`,
+        color: percent >= 70 ? 0x57a857 : (percent >= 40 ? 0xe6b800 : 0xc44536),
+        fields: [
+          { name: '👤 Игрок', value: `\`${nick}\``, inline: true },
+          { name: '📈 Результат', value: `**${percent}%** (${correctCount}/${total})`, inline: true },
+          { name: '📂 Тип опроса', value: typeLabel, inline: false },
+          { name: '📝 Ответы', value: answersBlock }
+        ],
+        footer: { text: 'CivWorld · Отбор разработчиков' },
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [embed] }) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return { success: true };
+      } catch (e) { return { success: false, error: e.message }; }
+    }
+
+    async function handleSubmit() {
+      if (!validateNick()) { nicknameInput.focus(); return; }
+      const nick = nicknameInput.value.trim();
+      const unanswered = userAnswers.findIndex(a => a === null);
+      if (unanswered !== -1) { alert(`⚠️ Ответьте на вопрос №${unanswered+1}`); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Отправка...';
+      const score = calculateScore();
+      const typeLabel = quizType === 'selfcode' ? 'Опрос по самописам' : 'Обычный опрос';
+      const res = await sendToWebhook(nick, score, typeLabel);
+      
+      if (res.success) {
+        resultPreview.textContent = `✅ Отправлено! ${score.percent}%`;
+        alert(`✅ Результат отправлен!\n${nick}: ${score.percent}% (${score.correctCount}/${score.total})`);
+        resetToChoice();
+      } else {
+        resultPreview.textContent = `❌ Ошибка`;
+        alert(`❌ Ошибка отправки: ${res.error}`);
+      }
+      submitBtn.disabled = false;
+      submitBtn.textContent = '📨 Отправить результат';
+    }
+
+    // ========== ОБРАБОТЧИКИ ==========
+    document.getElementById('choiceYes').addEventListener('click', () => startQuiz('selfcode'));
+    document.getElementById('choiceNo').addEventListener('click', () => startQuiz('regular'));
+    backBtn.addEventListener('click', resetToChoice);
+    nicknameInput.addEventListener('input', validateNick);
+    submitBtn.addEventListener('click', handleSubmit);
+  })();
+</script>
 </body>
 </html>
